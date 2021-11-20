@@ -17,5 +17,13 @@ def predict():
     return jsonify({"survival": str(prediction.flatten()[0])})
 
 
+@app.route("/predict_batch", methods=["POST"])
+def predict_batch():
+    data = request.json
+    df = tfdf.keras.pd_dataframe_to_tf_dataset(pd.DataFrame(data))
+    predictions = model.predict(df)
+    return jsonify({"survival_batch": [str(i) for i in predictions.flatten()]})
+
+
 if __name__ == "__main__":
     app.run(port=8080)
